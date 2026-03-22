@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPX for BTC Traders — Deep Dive Reference</title>
+<meta name="description" content="A comprehensive guide for Bitcoin traders learning to trade the S&P 500. Market structure, indicators, volatility regimes, and the BTC-to-SPX transition playbook.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   ROOT VARIABLES & RESET
+   ============================================ */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0e0e16;
+  --bg-card: rgba(14, 14, 22, 0.8);
+  --bg-card-hover: rgba(20, 20, 32, 0.9);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(247, 147, 26, 0.3);
+  --text-primary: #e8e8ef;
+  --text-secondary: #8a8a9b;
+  --text-muted: #5a5a6e;
+  --orange: #f7931a;
+  --orange-dim: rgba(247, 147, 26, 0.15);
+  --teal: #00d4aa;
+  --teal-dim: rgba(0, 212, 170, 0.12);
+  --green: #22c55e;
+  --red: #ef4444;
+  --green-dim: rgba(34, 197, 94, 0.1);
+  --red-dim: rgba(239, 68, 68, 0.1);
+  --sidebar-width: 260px;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 15px;
+  scrollbar-color: var(--text-muted) var(--bg-secondary);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Scanline background texture */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.008) 2px,
+      rgba(255, 255, 255, 0.008) 4px
+    );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Grid pattern */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 0; }
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================
+   SIDEBAR NAVIGATION
+   ============================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: rgba(8, 8, 14, 0.95);
+  border-right: 1px solid var(--border-subtle);
+  padding: 24px 0;
+  z-index: 1000;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-logo {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo h2 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+.sidebar-logo span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 400;
+  display: block;
+  margin-top: 4px;
+}
+
+.sidebar nav { padding: 0 12px; }
+
+.sidebar nav a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+}
+
+.sidebar nav a:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.03);
+  text-decoration: none;
+}
+
+.sidebar nav a.active {
+  color: var(--orange);
+  border-left-color: var(--orange);
+  background: var(--orange-dim);
+  font-weight: 500;
+}
+
+.sidebar nav a .nav-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-right: 6px;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1100;
+  width: 36px;
+  height: 36px;
+  background: rgba(14, 14, 22, 0.9);
+  border: 1px solid var(--border-medium);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: 0.3s;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+.section {
+  padding: 60px 48px;
+  border-bottom: 1px solid var(--border-subtle);
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1, h2, h3, h4 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+h2 .section-num {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--teal);
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin: 32px 0 14px;
+  color: var(--orange);
+}
+
+h4 {
+  font-size: 0.95rem;
+  margin: 20px 0 10px;
+  color: var(--teal);
+}
+
+p {
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+strong { color: var(--text-primary); font-weight: 600; }
+
+.text-orange { color: var(--orange); }
+.text-teal { color: var(--teal); }
+.text-green { color: var(--green); }
+.text-red { color: var(--red); }
+.text-muted { color: var(--text-muted); }
+
+.cite {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.cite a { color: var(--text-muted); }
+.cite a:hover { color: var(--teal); }
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  padding: 80px 48px 60px;
+  text-align: left;
+  max-width: 960px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--orange), #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .tagline {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.stat-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-medium);
+}
+
+.stat-bar .stat-item {
+  background: var(--bg-secondary);
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.stat-bar .stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.stat-bar .stat-values {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.stat-bar .stat-btc {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--orange);
+}
+
+.stat-bar .stat-vs {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.stat-bar .stat-spx {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table-wrap {
+  overflow-x: auto;
+  margin: 16px 0 20px;
+  border: 1px solid var(--border-subtle);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
+
+thead th {
+  background: rgba(247, 147, 26, 0.08);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--orange);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-medium);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+tbody tr:hover {
+  background: rgba(247, 147, 26, 0.04);
+}
+
+td.num {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 24px;
+  margin: 16px 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 30px rgba(247, 147, 26, 0.04);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.card-btc {
+  border-left: 3px solid var(--orange);
+}
+
+.card-spx {
+  border-left: 3px solid var(--teal);
+}
+
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.card-label.btc { color: var(--orange); }
+.card-label.spx { color: var(--teal); }
+
+/* Mental model cards */
+.mental-model-card {
+  margin: 20px 0;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+}
+
+.mental-model-card .mm-title {
+  padding: 14px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.02);
+}
+
+.mental-model-card .mm-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mental-model-card .mm-side {
+  padding: 16px 20px;
+}
+
+.mental-model-card .mm-side:first-child {
+  border-right: 1px solid var(--border-subtle);
+  background: var(--orange-dim);
+}
+
+.mental-model-card .mm-side:last-child {
+  background: var(--teal-dim);
+}
+
+.mental-model-card .mm-side-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+.mental-model-card .mm-side:first-child .mm-side-label { color: var(--orange); }
+.mental-model-card .mm-side:last-child .mm-side-label { color: var(--teal); }
+
+.mental-model-card .mm-side p {
+  font-size: 0.82rem;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ============================================
+   ACCORDION
+   ============================================ */
+.accordion-item {
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+  background: var(--bg-card);
+  transition: all 0.3s;
+}
+
+.accordion-item:hover {
+  border-color: var(--border-medium);
+}
+
+.accordion-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.accordion-header h4 {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--red);
+}
+
+.accordion-arrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.3s;
+}
+
+.accordion-item.open .accordion-arrow {
+  transform: rotate(90deg);
+}
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.accordion-body-inner {
+  padding: 0 20px 20px;
+}
+
+.accordion-item.open .accordion-body {
+  max-height: 600px;
+}
+
+/* ============================================
+   SESSION TIMELINE
+   ============================================ */
+.timeline-bar {
+  display: flex;
+  border: 1px solid var(--border-subtle);
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+.timeline-segment {
+  padding: 10px 12px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  border-right: 1px solid var(--border-subtle);
+  min-width: 90px;
+}
+
+.timeline-segment:last-child { border-right: none; }
+
+.timeline-segment .tl-time {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-size: 0.6rem;
+}
+
+.timeline-segment .tl-label {
+  color: var(--text-muted);
+  font-size: 0.58rem;
+}
+
+.tl-premarket { background: rgba(138, 138, 155, 0.08); }
+.tl-power { background: rgba(34, 197, 94, 0.1); }
+.tl-lunch { background: rgba(239, 68, 68, 0.06); }
+.tl-afternoon { background: rgba(0, 212, 170, 0.08); }
+.tl-close { background: rgba(34, 197, 94, 0.1); }
+.tl-after { background: rgba(138, 138, 155, 0.06); }
+
+/* ============================================
+   TERMINAL BOX (Quick Reference)
+   ============================================ */
+.terminal-box {
+  background: #0c0c14;
+  border: 1px solid var(--teal);
+  padding: 24px;
+  margin: 20px 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--teal);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-box::before {
+  content: '$ SPX_QUICK_REF';
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 212, 170, 0.2);
+}
+
+.terminal-box .t-section {
+  margin-bottom: 14px;
+}
+
+.terminal-box .t-heading {
+  color: var(--orange);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.terminal-box .t-line {
+  color: var(--text-secondary);
+  display: block;
+}
+
+.terminal-box .t-highlight {
+  color: var(--teal);
+  font-weight: 500;
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border: 1px solid var(--teal);
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal-close:hover { border-color: var(--red); color: var(--red); }
+
+/* Floating button */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1500;
+  background: var(--bg-secondary);
+  border: 1px solid var(--teal);
+  color: var(--teal);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fab:hover {
+  background: rgba(0, 212, 170, 0.1);
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.15);
+}
+
+/* ============================================
+   LISTS
+   ============================================ */
+ul, ol {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.55;
+}
+
+li strong { color: var(--text-primary); }
+
+/* ============================================
+   CODE BLOCKS
+   ============================================ */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: rgba(255,255,255,0.04);
+  padding: 2px 6px;
+  color: var(--teal);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  padding: 40px 48px;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.footer p {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.footer a { color: var(--text-muted); }
+.footer a:hover { color: var(--teal); }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.visible { display: block; }
+  .hamburger { display: flex; }
+  .main-content { margin-left: 0; }
+  .section, .hero, .footer { padding: 40px 20px; }
+  .stat-bar { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .mental-model-card .mm-body { grid-template-columns: 1fr; }
+  .mental-model-card .mm-side:first-child { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.3rem; }
+}
+
+@media (max-width: 600px) {
+  html { font-size: 14px; }
+  .hero h1 { font-size: 1.7rem; }
+  table { font-size: 0.72rem; }
+  thead th, tbody td { padding: 7px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hamburger Menu -->
+<button class="hamburger" id="hamburger" aria-label="Toggle menu">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h2>SPX for BTC<br>Traders</h2>
+    <span>Deep Dive Reference · March 2026</span>
+  </div>
+  <nav>
+    <a href="#hero"><span class="nav-num">00</span> Overview</a>
+    <a href="#what-is-spx"><span class="nav-num">01</span> What Is SPX</a>
+    <a href="#market-structure"><span class="nav-num">02</span> Market Structure</a>
+    <a href="#what-moves-spx"><span class="nav-num">03</span> What Moves SPX</a>
+    <a href="#technical-trading"><span class="nav-num">04</span> Technical Trading</a>
+    <a href="#volatility"><span class="nav-num">05</span> Volatility Regimes</a>
+    <a href="#side-by-side"><span class="nav-num">06</span> BTC vs SPX</a>
+    <a href="#mental-models"><span class="nav-num">07</span> Mental Model Shifts</a>
+    <a href="#common-mistakes"><span class="nav-num">08</span> Common Mistakes</a>
+    <a href="#what-transfers"><span class="nav-num">09</span> What Transfers</a>
+    <a href="#playbook"><span class="nav-num">10</span> Transition Playbook</a>
+    <a href="#correlation"><span class="nav-num">11</span> BTC-SPX Correlation</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <h1>SPX for BTC Traders</h1>
+    <p class="tagline">Translate your crypto edge to the world's biggest index. A dense, data-driven guide built for traders who think in satoshis and want to learn the language of SPX.</p>
+
+    <div class="stat-bar">
+      <div class="stat-item">
+        <div class="stat-label">Market Cap</div>
+        <div class="stat-values">
+          <span class="stat-btc">$1.4T</span>
+          <span class="stat-vs">vs</span>
+          <span class="stat-spx">$61T</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Avg Daily Range</div>
+        <div class="stat-values">
+          <span class="stat-btc">3–7%</span>
+          <span class="stat-vs">vs</span>
+          <span class="stat-spx">0.8–1.3%</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Max Cycle Drawdown</div>
+        <div class="stat-values">
+          <span class="stat-btc">−76%</span>
+          <span class="stat-vs">vs</span>
+          <span class="stat-spx">−34%</span>
+        </div>
+      </div>
+    </div>
+    <p class="cite" style="margin-top:10px;">Data: <a href="https://www.coingecko.com/en/charts">CoinGecko</a> · <a href="https://ycharts.com/indicators/sp_500_market_cap">YCharts</a> · <a href="https://www.barchart.com/stocks/quotes/$SPX/technical-analysis">Barchart</a></p>
+  </section>
+
+  <!-- ============ 01: WHAT IS SPX ============ -->
+  <section class="section" id="what-is-spx">
+    <h2><span class="section-num">01</span>What Is SPX</h2>
+
+    <p>The S&P 500 (ticker: <strong>SPX</strong>) is a market-capitalization-weighted index tracking ~503 large-cap U.S. companies. Launched in 1957 by S&P Dow Jones Indices. It is <strong>not a stock you can buy</strong> — SPX is a calculation, a weighted average. To trade it you use SPY, ES futures, or SPX options.</p>
+    <p>Combined market cap: <strong class="text-teal">~$61.1 trillion</strong> — roughly 40× BTC's ~$1.4T. SPY trades ~83M shares/day. ES futures add further depth. Together, SPX-linked products are the deepest liquidity pool in global finance.</p>
+
+    <h3>How Companies Get In (and Out)</h3>
+    <p>Inclusion is governed by an S&P Index Committee — discretionary, not automatic. Key criteria:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Criterion</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td>Market cap</td><td class="num">≥ $22.7B (raised July 2025)</td></tr>
+          <tr><td>Profitability</td><td>Positive earnings most recent Q + cumulative 4Q</td></tr>
+          <tr><td>Liquidity</td><td>Annual $ traded ≥ 1.0× float-adjusted mkt cap</td></tr>
+          <tr><td>Domicile</td><td>U.S.-incorporated, NYSE/Nasdaq/CBOE</td></tr>
+          <tr><td>Float</td><td>≥ 50% of minimum threshold</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Reviews happen quarterly. Rebalances effective 3rd Friday of Mar/Jun/Sep/Dec. Inclusion creates an "index effect" — passive funds <em>must</em> buy the incoming stock. Recent adds: DoorDash, Williams-Sonoma (Mar 2025), Block (Jul 2025).</p>
+
+    <h3>Sector Weightings (March 2026)</h3>
+    <p>Info Tech alone is ~⅓ of the index. The <strong>"Magnificent Seven"</strong> (NVDA, AAPL, MSFT, AMZN, GOOGL, META, TSLA) represent <strong>~32.6%</strong> of the entire S&P 500.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sector</th><th>Weight</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Information Technology</strong></td><td class="num">32.4%</td></tr>
+          <tr><td><strong>Financials</strong></td><td class="num">12.5%</td></tr>
+          <tr><td><strong>Communication Services</strong></td><td class="num">10.5%</td></tr>
+          <tr><td><strong>Consumer Discretionary</strong></td><td class="num">10.0%</td></tr>
+          <tr><td><strong>Health Care</strong></td><td class="num">9.8%</td></tr>
+          <tr><td><strong>Industrials</strong></td><td class="num">9.2%</td></tr>
+          <tr><td>Consumer Staples</td><td class="num">5.4%</td></tr>
+          <tr><td>Energy</td><td class="num">3.5%</td></tr>
+          <tr><td>Utilities</td><td class="num">2.5%</td></tr>
+          <tr><td>Materials</td><td class="num">2.1%</td></tr>
+          <tr><td>Real Estate</td><td class="num">2.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cite"><a href="https://www.schwab.com/learn/story/stock-sector-outlook">Charles Schwab Sector Outlook, March 2026</a></p>
+
+    <h3>Top 10 Holdings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Company</th><th>Ticker</th><th>Weight</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>NVIDIA</td><td class="num">NVDA</td><td class="num">7.38%</td></tr>
+          <tr><td class="num">2</td><td>Apple</td><td class="num">AAPL</td><td class="num">6.12%</td></tr>
+          <tr><td class="num">3</td><td>Microsoft</td><td class="num">MSFT</td><td class="num">4.86%</td></tr>
+          <tr><td class="num">4</td><td>Amazon</td><td class="num">AMZN</td><td class="num">3.70%</td></tr>
+          <tr><td class="num">5</td><td>Alphabet A</td><td class="num">GOOGL</td><td class="num">3.13%</td></tr>
+          <tr><td class="num">6</td><td>Alphabet C</td><td class="num">GOOG</td><td class="num">2.91%</td></tr>
+          <tr><td class="num">7</td><td>Meta Platforms</td><td class="num">META</td><td class="num">2.62%</td></tr>
+          <tr><td class="num">8</td><td>Broadcom</td><td class="num">AVGO</td><td class="num">2.56%</td></tr>
+          <tr><td class="num">9</td><td>Tesla</td><td class="num">TSLA</td><td class="num">2.47%</td></tr>
+          <tr><td class="num">10</td><td>Berkshire Hathaway</td><td class="num">BRK.B</td><td class="num">1.75%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Top 10 = <strong>~39.5%</strong> of index weight. The bottom 400 companies collectively weigh less than the top 3.</p>
+    <p class="cite"><a href="https://www.slickcharts.com/sp500">Slickcharts S&P 500 Components</a></p>
+
+    <h3>SPX vs SPY vs ES vs SPX Options</h3>
+    <p>This trips up crypto traders constantly. Here's the breakdown:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>What</th><th>Tradeable?</th><th>Notional</th><th>Tax</th><th>Settlement</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SPX</strong></td><td>The index — a number</td><td>❌ No</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+          <tr><td><strong>SPY</strong></td><td>ETF tracking SPX</td><td>✅ Like a stock</td><td>~$680/share</td><td>Standard</td><td>Physical</td></tr>
+          <tr><td><strong>SPX Options</strong></td><td>Options on the index</td><td>✅ Options only</td><td>~$6,700/pt</td><td class="text-green">60/40 rule</td><td>Cash</td></tr>
+          <tr><td><strong>/ES</strong></td><td>E-mini futures</td><td>✅ Futures acct</td><td>$50 × SPX</td><td class="text-green">60/40 rule</td><td>Cash</td></tr>
+          <tr><td><strong>/MES</strong></td><td>Micro E-mini</td><td>✅ Futures acct</td><td>$5 × SPX</td><td class="text-green">60/40 rule</td><td>Cash</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The <strong>60/40 tax rule</strong> (Section 1256) for SPX options and futures is huge: gains taxed 60% long-term / 40% short-term <em>regardless of hold period</em>. Hold for one day, still get the preferential rate. SPX options are <strong>European-style</strong> (exercise at expiration only). Cash settlement means no shares transfer — similar to BTC perpetual futures.</p>
+    <p class="cite"><a href="https://www.tastylive.com/news-insights/four-ways-trade-the-sp500-spy-spx-futures">Tastylive — Four Ways to Trade the S&P 500</a></p>
+  </section>
+
+  <!-- ============ 02: MARKET STRUCTURE ============ -->
+  <section class="section" id="market-structure">
+    <h2><span class="section-num">02</span>Market Structure</h2>
+
+    <h3>Trading Hours: BTC 24/7 vs SPX Sessions</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Session</th><th>Hours (ET)</th><th>What's Trading</th></tr></thead>
+        <tbody>
+          <tr><td>Pre-market</td><td class="num">4:00 AM – 9:30 AM</td><td>ECN/dark pool; thin liquidity; wide spreads</td></tr>
+          <tr><td><strong>Regular (RTH)</strong></td><td class="num"><strong>9:30 AM – 4:00 PM</strong></td><td>Full exchange; the "official" session</td></tr>
+          <tr><td>After-hours</td><td class="num">4:00 PM – 8:00 PM</td><td>ECN; lower vol; earnings released here</td></tr>
+          <tr><td>/ES Futures</td><td class="num">Sun 5pm CT – Fri 4pm CT</td><td>Near 24hr; 1hr daily break; closed weekends</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Session Timeline</h3>
+    <div class="timeline-bar">
+      <div class="timeline-segment tl-premarket">
+        <span class="tl-time">4:00–9:30</span>
+        <span class="tl-label">Pre-Market<br>Thin liquidity</span>
+      </div>
+      <div class="timeline-segment tl-power">
+        <span class="tl-time">9:30–10:30</span>
+        <span class="tl-label">Morning Power Hour<br>Highest volume</span>
+      </div>
+      <div class="timeline-segment tl-lunch">
+        <span class="tl-time">10:30–2:30</span>
+        <span class="tl-label">Lunch Lull<br>Low vol, chop</span>
+      </div>
+      <div class="timeline-segment tl-close">
+        <span class="tl-time">3:00–4:00</span>
+        <span class="tl-label">Power Hour<br>Volume surge</span>
+      </div>
+      <div class="timeline-segment tl-after">
+        <span class="tl-time">4:00–8:00</span>
+        <span class="tl-label">After-Hours<br>Earnings drops</span>
+      </div>
+    </div>
+
+    <h3>Key Structural Differences from BTC</h3>
+    <ul>
+      <li><strong>Gaps are a daily feature.</strong> BTC never gaps because it never closes. SPX gaps almost every session from overnight ES futures moves, economic data, or earnings.</li>
+      <li><strong>Liquidity disappears at night.</strong> Even ES futures overnight = fraction of RTH liquidity. A block that moves ES 0.2 pts during RTH might move it 1+ pts at 2am.</li>
+      <li><strong>Weekend risk is asymmetric.</strong> Bad news Saturday? You can't exit SPX until Monday. BTC trades through it.</li>
+      <li><strong>ES futures are your overnight signal.</strong> Before markets open, ES tells you "fair value." Big ES moves overnight often drag BTC in real-time.</li>
+    </ul>
+
+    <h3>Circuit Breakers — BTC Has Nothing Like This</h3>
+    <p>U.S. equity markets can be <strong>forcibly halted by regulators</strong>. Bitcoin cannot.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Level</th><th>Trigger</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="text-green"><strong>Level 1</strong></td><td class="num">−7% decline</td><td>All trading halted 15 min (if before 3:25 PM)</td></tr>
+          <tr><td class="text-orange"><strong>Level 2</strong></td><td class="num">−13% decline</td><td>All trading halted 15 min (if before 3:25 PM)</td></tr>
+          <tr><td class="text-red"><strong>Level 3</strong></td><td class="num">−20% decline</td><td>All trading halted for the rest of the day</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Real-world:</strong> March 16, 2020 (Black Monday II, COVID) — Level 1 triggered within minutes of open. BTC contrast: fell $9K → $3.8K in 48 hours with zero halts.</p>
+    <p class="cite"><a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/stock-market-circuit-breakers">Investor.gov</a> · <a href="https://www.nasdaqtrader.com/trader.aspx?id=CircuitBreaker">Nasdaq Trader</a></p>
+  </section>
+
+  <!-- ============ 03: WHAT MOVES SPX ============ -->
+  <section class="section" id="what-moves-spx">
+    <h2><span class="section-num">03</span>What Moves SPX</h2>
+
+    <h3>A. Federal Reserve / FOMC Policy</h3>
+    <p><strong>The single most important macro driver of SPX.</strong> The Fed controls the Federal Funds Rate (FFR) — the overnight rate that propagates through mortgages, corporate credit, and critically, the <strong>discount rate used to value equities</strong>.</p>
+    <ul>
+      <li><strong>Rate cuts</strong> → lower discount rates → <span class="text-green">stocks up</span></li>
+      <li><strong>Rate hikes</strong> → higher discount rates → <span class="text-red">stocks down</span></li>
+      <li>Effect most pronounced in <strong>growth/tech stocks</strong> (long-duration assets)</li>
+    </ul>
+
+    <h4>2026 FOMC Meeting Schedule</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Meeting</th><th>Dates</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>January</td><td class="num">Jan 27–28</td><td></td></tr>
+          <tr><td class="text-orange"><strong>March</strong></td><td class="num"><strong>Mar 17–18</strong></td><td class="text-orange">Includes SEP (dot plot)</td></tr>
+          <tr><td>April</td><td class="num">Apr 28–29</td><td></td></tr>
+          <tr><td class="text-orange"><strong>June</strong></td><td class="num"><strong>Jun 16–17</strong></td><td class="text-orange">Includes SEP</td></tr>
+          <tr><td>July</td><td class="num">Jul 28–29</td><td></td></tr>
+          <tr><td class="text-orange"><strong>September</strong></td><td class="num"><strong>Sep 15–16</strong></td><td class="text-orange">Includes SEP</td></tr>
+          <tr><td>October</td><td class="num">Oct 27–28</td><td></td></tr>
+          <tr><td class="text-orange"><strong>December</strong></td><td class="num"><strong>Dec 8–9</strong></td><td class="text-orange">Includes SEP</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Dec 18, 2024:</strong> Powell signaled fewer future cuts than expected. SPX plunged ~3% in 2 hours — worst FOMC reaction since March 2020.</p>
+    <p><strong>2022 rate cycle:</strong> Fed hiked 11 times (0% → 5.5%). SPX fell <strong>27.5%</strong>. Nasdaq fell ~36%.</p>
+    <p class="cite"><a href="https://bankingjournal.aba.com/2024/08/fomc-releases-tentative-meeting-schedule-for-2025-2026/">ABA Banking Journal</a> · <a href="https://www.forbes.com/advisor/investing/fed-funds-rate-history/">Forbes Advisor</a></p>
+
+    <h3>B. Economic Data Releases</h3>
+    <p>Unlike BTC (no earnings, no GDP releases), SPX is anchored to macro data on a fixed calendar.</p>
+
+    <h4>1. Non-Farm Payrolls (NFP)</h4>
+    <p>First Friday of each month, 8:30 AM ET. The most-watched U.S. data point. SPX moves <strong>0.5–1.5%</strong> in the first 30 min; volume spikes 3–5× normal. Strong NFP = initially bullish but can turn bearish if it implies "higher for longer."</p>
+
+    <h4>2. CPI (Consumer Price Index)</h4>
+    <p>Monthly, 8:30 AM ET. CPI above forecast: <strong class="text-red">−0.8% avg first-hour decline</strong>. CPI below forecast: <strong class="text-green">+0.6% avg first-hour gain</strong>. June 2022 CPI printed 9.1% — SPX had its worst week of the bear market.</p>
+
+    <h4>3. GDP (Gross Domestic Product)</h4>
+    <p>Quarterly, 8:30 AM ET. Above forecast: <strong class="text-green">+0.4–0.8%</strong> within 30 min. Below forecast: <strong class="text-red">−0.6–1.2%</strong> in first hour. Two negative quarters = technical recession.</p>
+
+    <h4>4. ISM PMI</h4>
+    <p>Monthly. Above 50 = expansion; below 50 = contraction. Less volatile than NFP/CPI but important for sector rotation.</p>
+    <p class="cite"><a href="https://tradefundrr.com/impact-of-economic-reports-on-markets/">TradeFundrr</a></p>
+
+    <h3>C. Earnings Season</h3>
+    <p><strong>There is no earnings season in crypto.</strong> Every S&P 500 company reports quarterly results. Because the Mag-7 represent ~32.6% of SPX weight, their earnings move the entire index.</p>
+    <p><strong>Q4 2025 earnings:</strong> Blended growth 8.2% YoY. Mag-7 growth: <strong>20.3%</strong> vs 4.1% for the other 493. Beat rate: 79%. The "beat and sell" phenomenon is alien to BTC traders — a company can beat consensus and still fall if guidance disappoints.</p>
+    <p class="cite"><a href="https://insight.factset.com/are-magnificent-7-companies-still-top-contributors-to-earnings-growth-for-the-sp-500-for-q4">FactSet Earnings Insight, Jan 2026</a></p>
+
+    <h3>D. Options Expiration (OPEX) and 0DTE</h3>
+    <p><strong>~60% of SPX options volume comes from 0DTE contracts</strong> — options that expire the same day. Quad witching (3rd Friday Mar/Jun/Sep/Dec) sees $5–7 trillion in notional expiring simultaneously. March 2026 monthly OPEX: ~$1.3T in delta notional rolling off.</p>
+    <p>Dealer gamma dynamics: <strong>Long gamma</strong> = dealers buy dips/sell rips (stabilizing). <strong>Short gamma</strong> = dealers sell dips/buy rips (destabilizing, amplifying moves).</p>
+    <p class="cite"><a href="https://spotgamma.com/record-0dte-volume-reshapes-the-sp-500/">SpotGamma</a> · <a href="https://www.cboe.com/insights/posts/spx-0-dte-options-jump-to-record-62-share-in-august/">Cboe</a></p>
+  </section>
+
+  <!-- ============ 04: TECHNICAL TRADING ============ -->
+  <section class="section" id="technical-trading">
+    <h2><span class="section-num">04</span>Technical Trading</h2>
+
+    <h3>RSI — Key Differences from BTC</h3>
+    <p>Standard 14-period RSI with 70/30 thresholds — same indicator, very different behavior.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metric</th><th style="color:var(--orange)">BTC</th><th style="color:var(--teal)">SPX</th></tr></thead>
+        <tbody>
+          <tr><td>Daily RSI oversold</td><td>Below 30 (meaningful)</td><td>Below 30 (extreme — panic)</td></tr>
+          <tr><td>Daily RSI overbought</td><td>Above 70 (common in bulls)</td><td>Above 70 (watch for reversion)</td></tr>
+          <tr><td>Weekly RSI oversold</td><td>Below 30 (crypto winters)</td><td>Below 35 is very rare; below 30 = generational</td></tr>
+          <tr><td>RSI in a bull market</td><td>Can sustain 70–80 for weeks</td><td>Oscillates 45–70</td></tr>
+          <tr><td>Bull market buy signal</td><td>RSI ~30</td><td><strong>RSI ~40</strong> (much higher threshold)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A daily RSI of 40 on SPX during a bull market is a buy signal. On BTC, RSI 40 is unremarkable. Divergences are more meaningful on SPX due to institutional hedging and CTA flows.</p>
+    <p class="cite"><a href="https://www.schwab.com/learn/story/how-to-tell-if-market-is-overbought-or-oversold">Charles Schwab</a> · <a href="https://www.home.saxo/content/articles/equities/spx-technical-update-18112025">Saxo Bank, Nov 2025</a></p>
+
+    <h3>Moving Averages</h3>
+    <p>SPX moving averages are far more institutionally respected than BTC MAs. Billions in CTA strategies are programmed around them.</p>
+
+    <h4>Hierarchy for SPX</h4>
+    <ol>
+      <li><strong>200 DMA</strong> — Defines bull/bear trend. Current: ~6,609. SPX above = uptrend. Below = defensive. CTAs literally act on this.</li>
+      <li><strong>50 DMA</strong> — Medium-term momentum. Nov 2025: SPX closed below 50 DMA for first time in 139 sessions — immediate warning signal.</li>
+      <li><strong>21 EMA</strong> — Short-term trend filter. Support in strong bulls.</li>
+      <li><strong>100 DMA</strong> — Secondary support, less cited.</li>
+    </ol>
+
+    <h4>Golden Cross / Death Cross</h4>
+    <p><strong>Golden cross win rate:</strong> SPX was higher 1 year later <strong>71%+ of the time</strong>, avg +10% return (data since 1928). July 1, 2025: SPX achieved golden cross after the tariff sell-off. On BTC, these signals are far noisier.</p>
+    <p class="cite"><a href="https://www.marketwatch.com/story/s-p-500-is-heading-for-its-first-golden-cross-in-more-than-2-years-heres-what-comes-next-7de9ce60">MarketWatch</a> · <a href="https://www.barchart.com/stocks/quotes/$SPX/technical-analysis">Barchart</a></p>
+
+    <h3>MACD — SPX Specifics</h3>
+    <p>Divergences more meaningful due to SPX's longer trending nature. The weekly MACD histogram turning negative is a significant warning. A documented "seasonal MACD buy signal" triggers in late October, marking the seasonally strong Nov–Apr period.</p>
+    <p class="cite"><a href="https://www.investing.com/analysis/sp-500-this-seasonal-macd-buy-signal-points-to-a-strong-yearend-rally-200653268">Investing.com</a></p>
+
+    <h3>Bollinger Bands</h3>
+    <p>SPX touching the upper band + overbought RSI reliably signals pullback (more mean-reverting than BTC). The squeeze → expansion pattern works like BTC: squeeze = imminent directional move. Research on 399 squeezes found: unfiltered direction accuracy <strong>49.6%</strong> (coin flip), but A-grade setups with context: <strong>71.4%</strong>.</p>
+    <p class="cite"><a href="https://www.reddit.com/r/Daytrading/comments/1rdji47/most_bollinger_band_squeezes_are_coin_flips_i/">r/Daytrading Bollinger study</a></p>
+
+    <h3>Market Breadth Indicators</h3>
+    <p><strong>This category does NOT exist in crypto.</strong> Breadth measures rally health across all 500 components. Breadth divergences are among the most powerful leading signals in equities.</p>
+
+    <h4>Advance/Decline (A/D) Line</h4>
+    <p>SPX making new highs on declining A/D = yellow flag. 2007 top: NYSE A/D showed bearish divergence before price peaked. 2024: Fidelity noted that "a relatively small percentage of stocks (Mag 7) were responsible for much of the gains" while breadth plunged.</p>
+
+    <h4>% of SPX Stocks Above 200 DMA</h4>
+    <p>Current (Mar 2026): <strong>~47.9%</strong> — borderline.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Reading</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Above 80%</td><td>Overbought; potential mean reversion</td></tr>
+          <tr><td class="num">70–80%</td><td>Strong bull market breadth</td></tr>
+          <tr><td class="num">50–70%</td><td>Neutral; mixed internals</td></tr>
+          <tr><td class="num">30–50%</td><td>Weakening breadth</td></tr>
+          <tr><td class="num">Below 20%</td><td class="text-green">Extreme oversold; high-probability rally setup</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cite"><a href="https://en.macromicro.me/series/22718/sp-500-200ma-breadth">MacroMicro</a> · <a href="https://www.marketinout.com/chart/market.php?breadth=above-sma-200">MarketInOut</a></p>
+
+    <h4>McClellan Oscillator</h4>
+    <p>Breadth momentum: 19-day EMA minus 39-day EMA of net advances. <strong>Breadth thrust signal:</strong> surge from below −50 to above +50 = major capitulation-to-recovery. May 2024: moved from −100 to +50 — occurred only once before (June 1987). Since 1980, 20/21 instances followed by rise within 60 days, avg <strong>+11.3%</strong>.</p>
+    <p><strong>McClellan Summation Index:</strong> When it transitions from below 100 to above 1,000, SPX has risen <strong>96% of the time</strong> over the following year.</p>
+    <p class="cite"><a href="https://chartschool.stockcharts.com/table-of-contents/market-indicators/mcclellan-oscillator">StockCharts</a> · <a href="https://bravosresearch.com/blog/mcclellan-oscillator-just-triggered-a-rare-market-signal/">Bravos Research</a> · <a href="https://sentimentrader.com/blog/a-market-breadth-signal-with-a-perfect-record-just-triggered">SentimentTrader</a></p>
+
+    <h4>Zweig Breadth Thrust (ZBT)</h4>
+    <p>The most powerful breadth signal. Triggers when 10-day EMA of (advancers/total) moves from below 40% to above 61.5% within 10 days. <strong>100% win rate since WWII</strong> for positive 6-month and 12-month returns. Avg 6-month: <strong>+14.8%</strong>. Avg 12-month: <strong>+23.4%</strong>. April 24, 2025: triggered after tariff sell-off — only the 20th signal since WWII.</p>
+    <p class="cite"><a href="https://www.investopedia.com/stocks-trigger-100-percent-accurate-bullish-signal-zweig-breadth-thrust-11722168">Investopedia</a></p>
+
+    <h3>Gap Fill Statistics</h3>
+    <p>SPX gaps almost every day — completely different from BTC's 24/7 continuous pricing.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Gap Size</th><th>Same-Day Fill (Up)</th><th>Same-Day Fill (Down)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0–0.19%</td><td class="text-green num">79%</td><td class="text-green num">88%</td></tr>
+          <tr><td class="num">0.20–0.39%</td><td class="num">62%</td><td class="num">79%</td></tr>
+          <tr><td class="num">Above 0.40%</td><td class="text-red num">29%</td><td class="num">36%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Overall: ~60% of all gaps fill within RTH. By 5 days: ~82% fill. 80%+ fill by noon. High-volume gaps fill only 29% — don't fade strong catalyst gaps. Monday gap-ups: only <strong>20%</strong> fill rate; Tuesday gap-ups: <strong>82%</strong>.</p>
+    <p class="cite"><a href="https://tradethatswing.com/sp-500-spy-es-gap-fill-strategy-and-statistics/">TradeThatSwing</a> · <a href="https://www.reddit.com/r/Daytrading/comments/1r3r2qn/i_tracked_65505_gaps_across_99_sp_500_stocks/">r/Daytrading 65K gap study</a></p>
+
+    <h3>Intraday Patterns</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pattern</th><th>Statistic</th></tr></thead>
+        <tbody>
+          <tr><td>First 15-min candle green → day closes green</td><td class="num text-green">70%</td></tr>
+          <tr><td>First 15-min candle red → day closes red</td><td class="num text-red">71%</td></tr>
+          <tr><td>Opens inside prior range → tags prior H or L</td><td class="num">86%</td></tr>
+          <tr><td>60-min ORB (options) win rate</td><td class="num text-green">89.4%</td></tr>
+          <tr><td>Initial balance breaks one side only</td><td class="num">78%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cite"><a href="https://tradethatswing.com/high-probability-stock-market-statistics/">TradeThatSwing</a> · <a href="https://optionalpha.com/blog/opening-range-breakout-0dte-options-trading-strategy-explained">Option Alpha</a></p>
+  </section>
+
+  <!-- ============ 05: VOLATILITY REGIMES ============ -->
+  <section class="section" id="volatility">
+    <h2><span class="section-num">05</span>Volatility Regimes</h2>
+
+    <h3>SPX vs BTC: Daily Range Numbers</h3>
+    <p>This is the most important calibration for any BTC trader moving to SPX.</p>
+
+    <div class="card" style="border-color: var(--teal);">
+      <div style="font-family:var(--font-mono); font-size:0.82rem; line-height:1.9;">
+        <div style="color:var(--orange);">BTC normal day: &nbsp;$73,000 × 3% = <strong>$2,190 range</strong></div>
+        <div style="color:var(--teal);">SPX normal day: &nbsp;$6,700 × 1.1% = <strong>$74 range</strong></div>
+        <div style="margin-top:8px; color:var(--orange);">BTC volatile day: $73,000 × 8% = <strong>$5,840 range</strong></div>
+        <div style="color:var(--teal);">SPX volatile day: $6,700 × 2.5% = <strong>$167 range</strong></div>
+      </div>
+    </div>
+
+    <p>A BTC trader watching SPX move $74 will feel like "nothing is happening." That's the normal operating environment. Many profitable SPX strategies are built entirely around that narrow range.</p>
+
+    <h4>Current SPX Average True Range (March 2026)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Period</th><th>Avg Daily Range</th><th>Avg Daily %</th></tr></thead>
+        <tbody>
+          <tr><td class="num">9-day</td><td class="num">85.32 pts</td><td class="num">1.27%</td></tr>
+          <tr><td class="num">14-day</td><td class="num">83.88 pts</td><td class="num"><strong>1.25%</strong></td></tr>
+          <tr><td class="num">20-day</td><td class="num">81.23 pts</td><td class="num">1.21%</td></tr>
+          <tr><td class="num">50-day</td><td class="num">72.82 pts</td><td class="num">1.09%</td></tr>
+          <tr><td class="num">100-day</td><td class="num">68.75 pts</td><td class="num">1.02%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Note: These are elevated due to the March 2026 sell-off. In normal low-VIX conditions (12–15), SPX daily range is 0.5–0.7%.</p>
+    <p><strong>Ratio:</strong> BTC is roughly <strong>3–5× more volatile</strong> than SPX daily. Annualized: BTC ~50–80% vs SPX ~12–20%.</p>
+    <p class="cite"><a href="https://www.barchart.com/stocks/quotes/$SPX/technical-analysis">Barchart</a> · <a href="https://www.fidelitydigitalassets.com/research-and-insights/closer-look-bitcoins-volatility">Fidelity Digital Assets</a></p>
+
+    <h3>Position Sizing Adjustment</h3>
+    <p>If you risk 1% of capital per trade on BTC with a 3% stop, you need to recalibrate for SPX's lower volatility.</p>
+    <ul>
+      <li>A 0.5% stop on SPX in low-VIX conditions gets triggered by noise alone</li>
+      <li>In high-VIX (30+), a 2% SPX stop ≈ a 6–10% BTC stop in standard deviations</li>
+      <li><strong>Rule:</strong> Use SPX ATR as stop multiplier: <code>1.5× ATR</code> in normal conditions, <code>2–3× ATR</code> in high-VIX</li>
+      <li>A 5% BTC allocation carries similar volatility impact as 15–20% in SPX stocks</li>
+    </ul>
+    <p class="cite"><a href="https://stoic.ai/blog/bitcoin-vs-sp500-performance-comparison/">Stoic AI</a></p>
+
+    <h3>VIX Regime Framework</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>VIX Level</th><th>Condition</th><th>Trading Implication</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Below 12</td><td>Extreme complacency</td><td class="text-red">Risk of sudden vol expansion</td></tr>
+          <tr><td class="num">12–15</td><td>Low vol / bull grind</td><td>Range-bound; sell premium</td></tr>
+          <tr><td class="num">15–20</td><td>Normal</td><td>Standard conditions</td></tr>
+          <tr><td class="num">20–25</td><td>Elevated anxiety</td><td>Trend fragments</td></tr>
+          <tr><td class="num">25–30</td><td>Fear zone</td><td class="text-green">Contrarian longs start to make sense</td></tr>
+          <tr><td class="num">30–40</td><td>High fear</td><td class="text-green">High-conviction contrarian territory</td></tr>
+          <tr><td class="num">40+</td><td>Panic / capitulation</td><td class="text-green">Near-certainty of eventual strong rally</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Historical VIX Extremes</h4>
+    <ul>
+      <li><strong>89.53 intraday (Oct 24, 2008):</strong> Global Financial Crisis. Credit frozen.</li>
+      <li><strong>82.69 close (Mar 16, 2020):</strong> COVID. SPX bottomed 4 days later. Recovered to new highs in 5 months.</li>
+      <li><strong>65.73 intraday (Aug 5, 2024):</strong> Yen carry trade unwind. Reverted in 10 trading days.</li>
+      <li><strong>52.33 close (Apr 8, 2025):</strong> Tariff shock. 3rd-highest close outside 2008/COVID.</li>
+    </ul>
+    <p class="cite"><a href="https://www.macroption.com/vix-all-time-high/">Macroption</a> · <a href="https://www.schaeffersresearch.com/content/analysis/2020/04/01/what-a-historically-high-vix-means-for-stocks">Schaeffers Research</a></p>
+
+    <h3>"Stairs Up, Elevator Down"</h3>
+    <p>This is empirically documented:</p>
+    <ul>
+      <li><strong>Avg bull market:</strong> 4.4 years, +151.6% cumulative</li>
+      <li><strong>Avg bear market:</strong> 11.1 months, −31.7% cumulative</li>
+      <li>SPX 2020: fell 34% in 23 trading days → recovered 27% in 15 days off the low</li>
+      <li>Since 0DTE dominance (2023+), the pattern has somewhat moderated</li>
+    </ul>
+    <p>The asymmetry is driven by leverage unwinds, gamma hedging cascades, and the absence of structural buyers during panic. BTC's pattern is less asymmetric — liquidation cascades can cause near-equivalent speed both ways.</p>
+    <p class="cite"><a href="https://www.ftportfolios.com/COMMON/CONTENTFILELOADER.ASPX?CONTENTGUID=4ECFA978-D0BB-4924-92C8-628FF9BFE12D">First Trust</a> · <a href="https://www.interactivebrokers.com/campus/traders-insight/securities/stocks/do-stocks-take-the-elevator-up-or-down/">Interactive Brokers</a></p>
+  </section>
+
+  <!-- ============ 06: SIDE BY SIDE ============ -->
+  <section class="section" id="side-by-side">
+    <h2><span class="section-num">06</span>BTC vs SPX Side-by-Side</h2>
+
+    <h3>Comprehensive Comparison (2024–2026 Data)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metric</th><th style="color:var(--orange)">Bitcoin (BTC)</th><th style="color:var(--teal)">S&P 500 (SPX)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Market Cap</strong></td><td class="num">~$1.42–1.48T</td><td class="num">~$55–61T</td></tr>
+          <tr><td><strong>Annualized Vol</strong></td><td class="num">~54% (trending down)</td><td class="num">~10–15% (VIX 15–17)</td></tr>
+          <tr><td><strong>Volatility Ratio</strong></td><td class="num">3–4× higher; 5.1× global eq</td><td class="num">Baseline 1×</td></tr>
+          <tr><td><strong>Avg Daily Range</strong></td><td class="num">3–7% typical; 10–20%+ liq events</td><td class="num">0.8–1.3% typical; 2–3%+ major</td></tr>
+          <tr><td><strong>Max Drawdown (Cycle)</strong></td><td class="num text-red">−76.4% (2021–22)</td><td class="num text-red">−55.2% (GFC); −34% (COVID)</td></tr>
+          <tr><td><strong>Avg Bear Drawdown</strong></td><td class="num">−40.7% all; −59.2% prolonged</td><td class="num">−20% = bear; −30%+ rare</td></tr>
+          <tr><td><strong>Recovery to ATH</strong></td><td class="num">Avg 249d; 531d prolonged</td><td class="num">97d (COVID); 4.5yr (GFC)</td></tr>
+          <tr><td><strong>Trading Hours</strong></td><td>24/7/365</td><td>Mon–Fri 9:30–4 ET; ES near 24hr wkdays</td></tr>
+          <tr><td><strong>Retail Leverage</strong></td><td class="num">10–100× perps</td><td class="num">2–4× margin; ~20× via options notional</td></tr>
+          <tr><td><strong>Dominant Leverage</strong></td><td>Perpetual futures</td><td>Options (0DTE: 62.4% of SPX vol)</td></tr>
+          <tr><td><strong>Manipulation Risk</strong></td><td class="text-red">High: whale wallets, wash trading</td><td class="text-green">Low: 500 large-caps, SEC enforcement</td></tr>
+          <tr><td><strong>Primary Driver</strong></td><td>Supply scarcity, halving, liquidity, sentiment</td><td>Earnings, Fed policy, economic cycles</td></tr>
+          <tr><td><strong>Valuation Tools</strong></td><td>S2F, MVRV, NVT, on-chain realized</td><td>P/E, EPS growth, DCF, macro</td></tr>
+          <tr><td><strong>Annual Returns</strong></td><td class="num">2022: −62%; 2023: +147%; 2024: +135%</td><td class="num">2022: −13%; 2023: +22%; 2024: +25%</td></tr>
+          <tr><td><strong>Tax (US)</strong></td><td>Standard cap gains</td><td class="text-green">SPX options: 60/40 (Section 1256)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cite"><a href="https://www.spglobal.com/en/research-insights/special-reports/bitcoin-volatility-trends-deep-dive">S&P Global</a> · <a href="https://stoic.ai/blog/bitcoin-vs-sp500-performance-comparison/">Stoic AI</a> · <a href="https://www.brucewoodcapital.com/2026/02/05/bitcoin-bear-markets-drawdowns-duration-history/">Bruce Wood Capital</a></p>
+
+    <h3>Drawdown Calibration</h3>
+    <p>This is the single most important recalibration for your risk psychology:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Drawdown</th><th style="color:var(--orange)">BTC Context</th><th style="color:var(--teal)">SPX Context</th></tr></thead>
+        <tbody>
+          <tr><td class="num">−5%</td><td>Barely noticeable noise</td><td>Mild pullback, minor headlines</td></tr>
+          <tr><td class="num">−10%</td><td>A Tuesday</td><td><strong>"Correction"</strong> — media coverage</td></tr>
+          <tr><td class="num">−20%</td><td>Small dip; buy the rumor</td><td class="text-red"><strong>Bear market</strong> by definition; recession fears</td></tr>
+          <tr><td class="num">−30%</td><td>Shallow bear by BTC standards</td><td class="text-red">Extreme fear; historical rarity</td></tr>
+          <tr><td class="num">−50%</td><td>Normal mid-cycle correction</td><td class="text-red">Catastrophic (GFC, dot-com)</td></tr>
+          <tr><td class="num">−60 to −80%</td><td>Standard BTC bear market</td><td class="text-red">Has never happened post-WWII</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>The trap:</strong> You see SPX down 8% and think "this is nothing" — and go all-in long. But SPX −8% can be the <em>beginning</em> of a 6–18 month grind lower without the violent V-recovery BTC traders expect.</p>
+  </section>
+
+  <!-- ============ 07: MENTAL MODEL SHIFTS ============ -->
+  <section class="section" id="mental-models">
+    <h2><span class="section-num">07</span>Mental Model Shifts</h2>
+    <p>Seven key reprogramming points for the BTC trader's brain:</p>
+
+    <!-- Model 1 -->
+    <div class="mental-model-card">
+      <div class="mm-title">1. "Number Go Up Technology" → "Earnings Growth Machine"</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>Price driven by scarcity (halving), adoption narrative, liquidity expansion, speculation. No earnings, no dividends, no cash flows.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>~75% of 2020–2025 total returns from actual corporate earnings growth. Trailing 12-month net income: $3.29T. SPX avg annual return: <strong>10.5% over 100 years</strong>. This is a compounding machine.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 2 -->
+    <div class="mental-model-card">
+      <div class="mm-title">2. Halving Cycles → Business + Fed + Earnings Cycles</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>4-year halving cycle. Pre-halving accumulation → post-halving parabolic → bear. 2024 halving: BTC $63K → ~$126K ATH (+98%), then −47%.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>Multiple overlapping cycles: Business cycle (~5.5yr), Fed rate cycle, quarterly earnings seasons (4×/yr), seasonal patterns. Track FOMC dates, earnings, CPI/NFP — not halvings.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 3 -->
+    <div class="mental-model-card">
+      <div class="mm-title">3. Drawdown Tolerance: 80% Is Normal → 20% Is a Crisis</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>−60% to −80% is a standard bear market. −30% is "shallow." You're wired to HODL through massive drawdowns and add size.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>−20% = official bear market. −30% = extreme rarity, headline crisis. SPX −8% can be the <em>start</em> of an 18-month grind. Don't all-in a "small" SPX dip expecting a V-bounce.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 4 -->
+    <div class="mental-model-card">
+      <div class="mm-title">4. 24/7 Trading → Forced Patience & Overnight Gaps</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>Market never closes. Act on any info any time. Bad news at 3 AM? You're already at the laptop. Never "trapped" in a position.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>Cash market: 6.5 hours/day. Overnight gaps are real risk — earnings at 4 PM, CPI at 8:30 AM. Large gaps (1%+) fill only 28–33% of the time. Forced patience is a genuine edge.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 5 -->
+    <div class="mental-model-card">
+      <div class="mm-title">5. Whale Manipulation → Institutional Flow & Gamma</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>On-chain whale tracking, exchange wash trading, spoofing, liquidation hunting. Single entities can move price at thin hours.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>Dark pools (~35–45% of volume), CTA systematic flows, options gamma hedging. 0DTE = 62.4% of SPX options vol. Dealers mechanically pin SPX near key strikes. No single whale — but gamma flows <em>feel</em> like manipulation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 6 -->
+    <div class="mental-model-card">
+      <div class="mm-title">6. On-Chain Data → Earnings, Guidance & Economic Releases</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>Exchange inflows/outflows, STH cost basis, ETF wallet flows, MVRV, NUPL, Puell Multiple. On-chain is uniquely transparent.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>Earnings reports (EPS vs consensus + guidance), options flow (unusual activity), economic calendar (CPI/NFP/FOMC), VIX term structure. "Beat but lower guidance" = sold. The calendar is your catalyst map.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 7 -->
+    <div class="mental-model-card">
+      <div class="mm-title">7. Leverage: 100× BTC → 2–4× SPX</div>
+      <div class="mm-body">
+        <div class="mm-side">
+          <div class="mm-side-label">BTC Mindset</div>
+          <p>10–100× leverage on perps. Standard active: 5–25×. Funding rates incentivize leverage cycling. Liquidation is instant and mechanical.</p>
+        </div>
+        <div class="mm-side">
+          <div class="mm-side-label">SPX Reality</div>
+          <p>Reg T: 2× margin. 0DTE calls look "cheap" but theta decay = near-100%/day if wrong. A $5K 0DTE call controls $670K notional (~134×) — but it <em>definitely</em> goes to zero if wrong by hours. Start at 1–2× until you learn gamma/theta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 08: COMMON MISTAKES ============ -->
+  <section class="section" id="common-mistakes">
+    <h2><span class="section-num">08</span>Common Mistakes</h2>
+    <p>Six mistakes BTC traders make in SPX, presented as expandable cards:</p>
+
+    <!-- Mistake 1 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 1: Overtrading During Low-Volatility Grinds</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p>BTC has 3–5% daily ranges. SPX on a low-vol day trades a 0.5–0.8% range for hours. The midday session (11:30 AM – 2:00 PM) is the lowest volatility — algo-driven, range-bound.</p>
+          <p><strong>The mistake:</strong> Getting bored, taking entries in noise. Best SPX hours: <strong>9:30–11:00 AM</strong> and <strong>2:30–3:45 PM</strong>. The weakest: first 30 min of open.</p>
+          <p><strong>Fix:</strong> Hard rules — trade only the two power windows. Do nothing between 11 AM and 2 PM.</p>
+          <p class="cite"><a href="https://www.investopedia.com/day-trading/best-time-day-week-month-trade-stocks/">Investopedia</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 2 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 2: Ignoring the Macro Calendar</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p>BTC has no CPI equivalent. Most BTC traders operate without an economic calendar. In SPX, the calendar is the operating framework.</p>
+          <p><strong>Key dates that routinely move SPX 1–3%:</strong> CPI (~2nd Tue/month, 8:30 AM), NFP (1st Fri/month, 8:30 AM), FOMC (8×/year, 2:00 PM), Earnings seasons (4×/year).</p>
+          <p><strong>The scenario:</strong> BTC trader buys SPX calls at open, looks great by 11 AM, then at 2 PM the FOMC releases a hawkish statement. SPX drops 2.5% in 15 minutes. Position wiped.</p>
+          <p><strong>Fix:</strong> Use <a href="https://www.investing.com/economic-calendar/">Investing.com Economic Calendar</a>. Mark every FOMC, CPI, NFP date 3 months forward. Never hold naked options through these unless that's explicitly the trade.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 3 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 3: BTC-Calibrated Stop Losses (Too Tight or Too Wide)</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p><strong>Too tight:</strong> 0.3% stop in SPX with 1.1% ATR gets hit by noise constantly. Stopped out 5× before the trade works.</p>
+          <p><strong>Too wide:</strong> 5% stop = catastrophic. The entire 2022 bear was only −19.4%. A 5% SPX loss ≈ 25–30% BTC loss in relative terms.</p>
+          <p><strong>Calibrated framework:</strong></p>
+          <ul>
+            <li>Day trades: 0.3–0.7% (scaled to ATR ~1.1–1.4%)</li>
+            <li>Swing trades (1–5 days): 1–2%</li>
+            <li>Position trades (weeks): 2–4%</li>
+            <li>Proper day-trade stop = 0.3–0.5× daily ATR = ~$28–$47</li>
+          </ul>
+          <p class="cite"><a href="https://www.barchart.com/stocks/quotes/$SPX/technical-analysis">Barchart</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 4 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 4: Fighting the Trend — SPX Has a Structural Upward Bias</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p>Over any 20-year period in history, SPX has never had a negative return. Avg annual: <strong>10.5%</strong>. 73% of calendar years are positive. Structural bid from:</p>
+          <ul>
+            <li>Corporate buybacks ($800B–$1T+/year)</li>
+            <li>Pension fund rebalancing</li>
+            <li>401(k)/IRA contributions ($50–100B+/month)</li>
+            <li>Dividend reinvestment</li>
+          </ul>
+          <p>Being persistently short SPX is one of the most reliable ways to lose money. <strong>The default trade is long.</strong> Shorts are tactical and time-limited.</p>
+          <p class="cite"><a href="https://tradethatswing.com/average-historical-stock-market-returns-for-sp-500-5-year-up-to-150-year-averages/">Trade That Swing</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 5 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 5: Not Understanding SPX Is Primarily an Options Market</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p><strong>62.4%</strong> of all SPX options volume is 0DTE. Dealer hedging mechanically moves the underlying. When dealers are long gamma → price is pinned (stabilizing). When short gamma → moves amplify (destabilizing).</p>
+          <p>90% of 0DTE options expire worthless. BTC trader buys SPX 0DTE calls expecting a "rip." SPX grinds +0.4% and expires flat. Calls lose 100% because the move wasn't enough to overcome theta + IV crush.</p>
+          <p>At 2:00 PM, SPX closes within 0.2% of current price <strong>65.6%</strong> of the time — that's gamma pinning.</p>
+          <p class="cite"><a href="https://www.cboe.com/insights/posts/spx-0-dte-options-jump-to-record-62-share-in-august/">Cboe</a> · <a href="https://www.moneyflock.com/contents/articles/0dte-spx-options-strategy-complete-guide-for-beginners">MoneyFlock</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 6 -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <h4>Mistake 6: Underestimating Overnight Risk</h4>
+        <span class="accordion-arrow">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <p>In BTC you can react to anything 24/7. In SPX, earnings drop at 4 PM or 7 AM. CPI at 8:30 AM. A profitable 3:59 PM position can open −3% the next morning.</p>
+          <p><strong>The double whammy:</strong> Long SPY calls, component misses earnings after-hours → next morning: lower delta AND lower vega wipes the position even if the stock partially recovers.</p>
+          <p><strong>Managing overnight risk:</strong></p>
+          <ul>
+            <li>Use defined-risk spreads (debit spreads, iron condors) for multi-day holds</li>
+            <li>Know earnings dates for top SPX names (AAPL, NVDA, AMZN, MSFT, META, GOOGL = ~25% of index)</li>
+            <li>Check afterhours ES/NQ before bed</li>
+            <li>Size so a 2% gap against you is survivable</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09: WHAT TRANSFERS ============ -->
+  <section class="section" id="what-transfers">
+    <h2><span class="section-num">09</span>What Transfers</h2>
+    <p>Skills from your BTC trading that carry over — and how to apply them.</p>
+
+    <h3>1. Sentiment Reading (Fear & Greed)</h3>
+    <p>BTC's Crypto Fear & Greed Index was derived from the CNN stock market version. BTC F&G below 20 → buy signal. <strong>VIX above 35 → contrarian buy signal in SPX.</strong> Same crowd psychology, same application. Key nuance: SPX extreme fear (VIX 30–40) can persist for weeks, while BTC's can resolve in days.</p>
+
+    <h3>2. Technical Analysis Basics</h3>
+    <p>TA is <strong>more reliable on SPX than BTC</strong> — not less. Institutional algorithms are programmed around 50-DMA, 200-DMA, Fibonacci, weekly pivots. S/R, trendlines, RSI divergences, volume analysis — all transfer directly. What's different: gamma-driven "magnetic pulls" near options strikes don't exist in BTC.</p>
+
+    <h3>3. Risk Management Discipline</h3>
+    <p>BTC traders who survived 2022 (−76%), COVID, and FTX have demonstrated risk management under fire that most equity traders never face. Position sizing, defining max loss pre-entry, trade journals — all directly applicable. <strong>Upgrade required:</strong> theta decay means delay = compounding loss in options. No "waiting for confirmation" before cutting.</p>
+
+    <h3>4. Macro Correlation Understanding</h3>
+    <p>Since 2020, BTC has been highly macro-correlated. If you already track DXY, M2, 2-year yields, and Fed dot plots, you have a more sophisticated macro framework than the average retail equity trader. 60-day BTC-SPX correlation: <strong>0.4–0.5</strong> in recent years, peaking near <strong>0.88</strong>.</p>
+    <p class="cite"><a href="https://stoic.ai/blog/bitcoin-vs-sp500-performance-comparison/">Stoic AI</a></p>
+
+    <h3>5. On-Chain → Options Flow Translation</h3>
+    <p>The analytical framework of tracking "where money is flowing" transfers directly:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="color:var(--orange)">BTC On-Chain Tool</th><th style="color:var(--teal)">SPX Equivalent</th><th>What It Measures</th></tr></thead>
+        <tbody>
+          <tr><td>Exchange inflows</td><td>Dark pool prints / Block trades</td><td>Smart money selling</td></tr>
+          <tr><td>Exchange outflows</td><td>Unusual call buying, dark pool accumulation</td><td>Smart money accumulating</td></tr>
+          <tr><td>ETF wallet flows (IBIT)</td><td>SPY/SPX ETF fund flows (creates/redeems)</td><td>Institutional demand</td></tr>
+          <tr><td>STH cost basis</td><td>Key strike clusters in options chain</td><td>Pin/move levels</td></tr>
+          <tr><td>MVRV ratio</td><td>Breadth indicators (A/D, % above 200 DMA)</td><td>Is market overextended?</td></tr>
+          <tr><td>Funding rate</td><td>VIX term structure / Skew</td><td>Directional lean</td></tr>
+          <tr><td>Open interest by price</td><td>Gamma exposure profile (GEX)</td><td>Magnetic/repulsive levels</td></tr>
+          <tr><td>NVT ratio</td><td>P/E ratio vs historical avg</td><td>Fundamental overvaluation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Recommended tools:</strong> Unusual Whales (options whale tracking), Market Chameleon (dark pool prints), SpotGamma/Cboe (GEX), FRED (M2, yields, credit spreads).</p>
+  </section>
+
+  <!-- ============ 10: TRANSITION PLAYBOOK ============ -->
+  <section class="section" id="playbook">
+    <h2><span class="section-num">10</span>Transition Playbook</h2>
+
+    <h3>Phase 1: Foundation (Weeks 1–2)</h3>
+    <p><strong>Start with SPY, not SPX options.</strong> SPY = ETF tracking S&P 500. 1 share ≈ 1/10th of SPX. Lower premiums, tighter spreads, physical settlement. Paper trade for at least 2 weeks to experience: midday grinds, overnight gaps, bid-ask spread behavior around data releases, and the actual pace of SPX price discovery.</p>
+    <p><strong>Position sizing: Start at 25% of your normal BTC size.</strong> Your edge is unproven in this market. Scale up only after 20+ documented trades with positive expectancy.</p>
+
+    <h3>Phase 2: Essential Tools (Week 1)</h3>
+    <ol>
+      <li><strong>Economic Calendar</strong> — <a href="https://www.investing.com/economic-calendar/">Investing.com</a>. Book all FOMC, CPI, NFP dates 12 months out.</li>
+      <li><strong>VIX Chart</strong> — Track level + term structure (VIX vs VIX3M). Backwardation = fear spike. Contango = normal.</li>
+      <li><strong>Gamma Dashboard</strong> — SpotGamma.com. Know where dealers are long/short gamma.</li>
+      <li><strong>Options Chain</strong> — Understand put/call ratio, skew, IV-implied expected moves.</li>
+      <li><strong>Earnings Calendar</strong> — <a href="https://earningswhispers.com/">Earnings Whispers</a>. AAPL + NVDA + MSFT + AMZN + GOOGL + META = ~30% of SPX.</li>
+    </ol>
+
+    <h3>Phase 3: Trading Rhythm</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Time (ET)</th><th>Action</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="num">8:00–9:15 AM</td><td>Review overnight ES, check macro news</td><td>ES prices in overnight developments</td></tr>
+          <tr><td class="num">8:30 AM</td><td>Check for economic data</td><td>CPI/NFP/GDP print — no position during release</td></tr>
+          <tr><td class="num">9:15–9:30 AM</td><td>Final setup review, key levels</td><td>Know your bias before open</td></tr>
+          <tr><td class="num text-green">9:30–11:00 AM</td><td class="text-green"><strong>Active trading window</strong></td><td>Best liquidity, cleanest trends</td></tr>
+          <tr><td class="num text-red">11:00 AM–2:00 PM</td><td class="text-red"><strong>Avoid new positions</strong></td><td>Low vol, algo noise, false breakouts</td></tr>
+          <tr><td class="num text-green">2:00–3:45 PM</td><td class="text-green"><strong>Active trading window</strong></td><td>Power hour, institutional rebalancing</td></tr>
+          <tr><td class="num">3:45–4:00 PM</td><td>Close or manage positions</td><td>MOC orders cause extreme action</td></tr>
+          <tr><td class="num">After 4:00 PM</td><td>Monitor ES futures</td><td>Check for earnings/macro impact tomorrow</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Key behavioral change:</strong> Training yourself to do nothing 11 AM–2 PM is one of the highest-ROI changes you can make.</p>
+
+    <h3>Phase 4: Position Sizing & Risk Parameters</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parameter</th><th style="color:var(--orange)">BTC Habit</th><th style="color:var(--teal)">SPX Adjustment</th></tr></thead>
+        <tbody>
+          <tr><td>Position size</td><td class="num">5–20% per trade</td><td class="num">2–5% per trade</td></tr>
+          <tr><td>Stop loss</td><td class="num">2–5% price move</td><td class="num">0.5–1.5% SPX move</td></tr>
+          <tr><td>Leverage</td><td class="num">5–25×</td><td class="num">1–3× (2× max until proven)</td></tr>
+          <tr><td>Daily loss limit</td><td>Typically none</td><td class="text-red">Hard stop at −2% of account/day</td></tr>
+          <tr><td>Options theta</td><td>N/A</td><td>Never hold near-expiry "hoping"</td></tr>
+          <tr><td>Simultaneous positions</td><td class="num">1–3 on BTC/alts</td><td class="num">1–2 until comfortable</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>The 1% rule for options:</strong> Never risk more than 1% of total capital on a single SPX options trade. $200K account = max $2,000 premium per trade.</p>
+
+    <h3>Quick Reference Card</h3>
+    <div class="terminal-box" id="quickRefContent">
+      <div class="t-section">
+        <div class="t-heading">BEFORE EVERY TRADE:</div>
+        <span class="t-line">[ ] Check economic calendar for events next 48 hours</span>
+        <span class="t-line">[ ] Check VIX level and term structure</span>
+        <span class="t-line">[ ] Know your max loss (1% of account for options)</span>
+        <span class="t-line">[ ] Know time to expiration and daily theta</span>
+        <span class="t-line">[ ] Is this a macro catalyst day? Trade BECAUSE of it or DESPITE it?</span>
+      </div>
+      <div class="t-section">
+        <div class="t-heading">STOP LOSS CALIBRATION:</div>
+        <span class="t-line">Day trade: &nbsp;<span class="t-highlight">0.4–0.7%</span> of SPX (~$27–$47)</span>
+        <span class="t-line">Swing trade: <span class="t-highlight">1.0–2.0%</span> of SPX</span>
+        <span class="t-line">Position: &nbsp;&nbsp;<span class="t-highlight">2.0–4.0%</span> of SPX</span>
+      </div>
+      <div class="t-section">
+        <div class="t-heading">TRADING HOURS:</div>
+        <span class="t-line"><span class="t-highlight">09:30–11:00</span> AM ET: Primary window</span>
+        <span class="t-line">11:00 AM–2:00 PM: <span style="color:var(--red)">NO NEW POSITIONS</span></span>
+        <span class="t-line"><span class="t-highlight">02:30–3:45</span> PM ET: Secondary window</span>
+      </div>
+      <div class="t-section">
+        <div class="t-heading">KEY NUMBERS:</div>
+        <span class="t-line">VIX &lt;15 = Complacency · 15–25 = Normal · &gt;30 = Fear · &gt;40 = Extreme</span>
+        <span class="t-line">SPX 14-day ATR ≈ <span class="t-highlight">$94 (1.41%)</span> at ~6,700 level</span>
+        <span class="t-line">50-DMA = key support · 200-DMA = bull/bear regime divider</span>
+        <span class="t-line">0DTE: &gt;60% of SPX options vol — theta is TOTAL within hours</span>
+      </div>
+      <div class="t-section">
+        <div class="t-heading">CORRELATION CHECK:</div>
+        <span class="t-line">BTC ↑ + SPX ↑ = Risk-on → hold longs</span>
+        <span class="t-line">BTC ↓ + VIX ↑ = Risk-off → <span style="color:var(--red)">reduce all risk</span></span>
+        <span class="t-line">BTC diverging from SPX = crypto-specific catalyst → SPX independent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11: CORRELATION ============ -->
+  <section class="section" id="correlation">
+    <h2><span class="section-num">11</span>BTC-SPX Correlation</h2>
+
+    <h3>Correlation History: Three Phases</h3>
+
+    <h4>Phase 1: Pre-2020 (Near-Zero)</h4>
+    <p>60-day rolling correlation: typically −0.2 to +0.2. Median 2017–2019: <strong>0.01–0.06</strong>. BTC traded on crypto-native narratives: adoption cycles, exchange hacks, regulatory news.</p>
+
+    <h4>Phase 2: 2020–2024 (Rising Correlation)</h4>
+    <p>COVID crash: BTC −53% while SPX −35% — correlation spiked to <strong>+0.56</strong>. 2022 rate hike cycle: peaked near <strong>+0.69</strong>. Post-2020 median: <strong>0.40–0.48</strong>. Same risk-on/risk-off sentiment triggers simultaneous positioning.</p>
+
+    <h4>Phase 3: 2024–2026 (ETF Integration + Selective Decoupling)</h4>
+    <p>Spot BTC ETF approval (Jan 2024) accelerated integration. CryptoQuant data: correlation reached <strong>0.88</strong> (late 2024) during risk-on surge. Feb 2025 onward: fell toward <strong>zero</strong> as BTC decoupled. Current regime (Q1 2026): asymmetric — same downside correlation, decoupled upside.</p>
+    <p class="cite"><a href="https://www.bayes-cid.com/pdf/newsletters/2026-01/CID-January-2026-Shore.pdf">Bayes Business School</a> · <a href="https://newhedge.io/bitcoin/us-equities-correlation">Newhedge</a> · <a href="https://coinmetrics.substack.com/p/state-of-the-network-issue-310">Coin Metrics</a></p>
+
+    <h3>When They Move Together (Risk-On / Risk-Off)</h3>
+    <div class="card-grid">
+      <div class="card card-btc">
+        <div class="card-label btc">Synchronized Upside (Risk-On)</div>
+        <p style="margin:0;">Fed pivots dovish, global M2 expansion, strong econ data. Q4 2024 post-election: BTC +47%, SPX +4% in same 6-week window — BTC amplified same macro beta at 10×.</p>
+      </div>
+      <div class="card card-spx">
+        <div class="card-label spx">Synchronized Downside (Risk-Off)</div>
+        <p style="margin:0;">Fed hawkish surprises, geopolitical shocks, credit events. 2022: BTC −76%, SPX −19.4% — same driver (Fed tightening), massively different amplitudes.</p>
+      </div>
+    </div>
+    <p><strong>Key insight:</strong> During risk-off, correlation approaches 1.0 — both fall, BTC falls harder. "BTC as a hedge to SPX" is a flawed thesis. When you most need the hedge, BTC sells off with or faster than equities.</p>
+
+    <h3>When They Decouple</h3>
+    <p><strong>BTC up, SPX flat:</strong> Halving supply shocks, spot ETF approvals (Jan 2024), regulatory/legal catalysts, Coinbase premium positive.</p>
+    <p><strong>BTC down, SPX stable:</strong> Exchange failures (FTX Nov 2022: BTC −25%, SPX barely moved), leverage flushes (Feb 2026: BTC −47% from ATH, SPX held), China mining ban, stablecoin contagion.</p>
+
+    <h3>Using Each Market to Inform the Other</h3>
+
+    <h4>BTC Signals → SPX Implications</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="color:var(--orange)">BTC Signal</th><th style="color:var(--teal)">Implication for SPX</th></tr></thead>
+        <tbody>
+          <tr><td>BTC parabolic bull (above 50 DMA, rising OI, positive funding)</td><td class="text-green">Risk-on confirmed → favor SPX longs, reduce hedges</td></tr>
+          <tr><td>BTC rolling over with negative ETF flows</td><td class="text-red">Risk appetite weakening → tighten stops, consider defense</td></tr>
+          <tr><td>BTC extreme fear (Crypto F&G below 15)</td><td>Risk-off elevated → SPX may face headwinds; watch VIX</td></tr>
+          <tr><td>BTC-SPX correlation drops to near zero</td><td>BTC on crypto-specific factors → do NOT use as SPX indicator</td></tr>
+          <tr><td>BTC strongly outperforming SPX</td><td class="text-green">Liquidity-driven risk-on → breadth likely expanding</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>SPX Signals → BTC Implications</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="color:var(--teal)">SPX Signal</th><th style="color:var(--orange)">Implication for BTC</th></tr></thead>
+        <tbody>
+          <tr><td>SPX new ATH with expanding breadth</td><td class="text-green">Global risk appetite high → BTC likely accumulating</td></tr>
+          <tr><td>SPX confirmed bear (−20% from ATH)</td><td class="text-red">BTC correlation kicks in → expect 2–4× harder fall</td></tr>
+          <tr><td>VIX above 30 (fear spike)</td><td class="text-red">BTC will almost certainly sell off → don't buy until VIX normalizes</td></tr>
+          <tr><td>SPX holds after hawkish Fed surprise</td><td class="text-green">BTC may be oversold relative to actual macro risk</td></tr>
+          <tr><td>FOMC day in SPX</td><td>High probability of outsized BTC move as well — amplified</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Correlation Rules of Thumb</h3>
+    <ol>
+      <li><strong>In risk-off, correlation → 1.0.</strong> Owning BTC does not hedge SPX exposure.</li>
+      <li><strong>BTC amplifies macro moves 3–5× vs SPX.</strong> A 1% SPX move → expect 3–5% BTC move in same direction during correlated regimes.</li>
+      <li><strong>BTC bull legs are often idiosyncratic</strong> (halvings, ETF flows) and do not require SPX participation. Causation is asymmetric.</li>
+      <li><strong>Post-ETF (2024+), BTC = high-beta risk asset.</strong> 60-day baseline shifted from ~0.05 (pre-2020) to ~0.40–0.50.</li>
+      <li><strong>Decoupling phases last 2–3 months</strong> on average, occurring at major cycle inflection points.</li>
+    </ol>
+    <p class="cite"><a href="https://www.investing.com/analysis/bitcoin-vs-sp-500-bitcoin-deleveraging-wave-tests-market-structure-resilience-200675871">Investing.com</a> · <a href="https://www.spglobal.com/en/research-insights/special-reports/bitcoin-volatility-trends-deep-dive">S&P Global</a></p>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <p>Research compiled March 16, 2026. All data current as of publication date. Sources cited inline throughout.</p>
+    <p style="margin-top:8px;">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </p>
+  </footer>
+</div>
+
+<!-- Quick Reference FAB -->
+<button class="fab" id="fabBtn" aria-label="Quick Reference">
+  <span style="font-size:1rem;">⌘</span> Quick Ref
+</button>
+
+<!-- Quick Reference Modal -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div style="padding:24px;">
+      <div class="terminal-box" style="margin:0;">
+        <div class="t-section">
+          <div class="t-heading">BEFORE EVERY TRADE:</div>
+          <span class="t-line">[ ] Check economic calendar for events next 48 hours</span>
+          <span class="t-line">[ ] Check VIX level and term structure</span>
+          <span class="t-line">[ ] Know your max loss (1% of account for options)</span>
+          <span class="t-line">[ ] Know time to expiration and daily theta</span>
+          <span class="t-line">[ ] Is this a macro catalyst day?</span>
+        </div>
+        <div class="t-section">
+          <div class="t-heading">STOP LOSS CALIBRATION:</div>
+          <span class="t-line">Day trade: &nbsp;<span class="t-highlight">0.4–0.7%</span> of SPX (~$27–$47)</span>
+          <span class="t-line">Swing trade: <span class="t-highlight">1.0–2.0%</span> of SPX</span>
+          <span class="t-line">Position: &nbsp;&nbsp;<span class="t-highlight">2.0–4.0%</span> of SPX</span>
+        </div>
+        <div class="t-section">
+          <div class="t-heading">TRADING HOURS:</div>
+          <span class="t-line"><span class="t-highlight">09:30–11:00</span> AM ET: Primary window</span>
+          <span class="t-line">11:00 AM–2:00 PM: <span style="color:var(--red)">NO NEW POSITIONS</span></span>
+          <span class="t-line"><span class="t-highlight">02:30–3:45</span> PM ET: Secondary window</span>
+        </div>
+        <div class="t-section">
+          <div class="t-heading">LEVERAGE RULE:</div>
+          <span class="t-line">SPX exposure = max 3× for experienced · <span class="t-highlight">1× for first month</span></span>
+          <span class="t-line">Options: never more than <span class="t-highlight">1% of account</span> in premium per trade</span>
+          <span class="t-line">Equity/Futures: 2–5% of account per position</span>
+        </div>
+        <div class="t-section">
+          <div class="t-heading">KEY NUMBERS:</div>
+          <span class="t-line">VIX &lt;15 = Complacency · 15–25 = Normal · &gt;30 = Fear · &gt;40 = Extreme</span>
+          <span class="t-line">SPX 14-day ATR ≈ <span class="t-highlight">$94 (1.41%)</span></span>
+          <span class="t-line">50-DMA = support · 200-DMA = bull/bear divider</span>
+          <span class="t-line">0DTE: &gt;60% SPX options vol — theta is TOTAL within hours</span>
+        </div>
+        <div class="t-section">
+          <div class="t-heading">CORRELATION CHECK:</div>
+          <span class="t-line">BTC ↑ + SPX ↑ = Risk-on → hold longs</span>
+          <span class="t-line">BTC ↓ + VIX ↑ = Risk-off → <span style="color:var(--red)">reduce all risk</span></span>
+          <span class="t-line">BTC diverging = crypto-specific → SPX independent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ SIDEBAR NAVIGATION ============
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('visible');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+});
+
+// Close sidebar on nav click (mobile)
+sidebar.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 900) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('visible');
+    }
+  });
+});
+
+// ============ INTERSECTION OBSERVER FOR ACTIVE NAV ============
+const sections = document.querySelectorAll('section[id], .hero[id]');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + entry.target.id) {
+          link.classList.add('active');
+        }
+      });
+    }
+  });
+}, {
+  rootMargin: '-20% 0px -70% 0px',
+  threshold: 0
+});
+
+sections.forEach(section => observer.observe(section));
+
+// ============ ACCORDION ============
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  const wasOpen = item.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+
+  // Toggle clicked
+  if (!wasOpen) {
+    item.classList.add('open');
+  }
+}
+
+// ============ QUICK REFERENCE MODAL ============
+const fabBtn = document.getElementById('fabBtn');
+const qrModal = document.getElementById('qrModal');
+const modalClose = document.getElementById('modalClose');
+
+fabBtn.addEventListener('click', () => {
+  qrModal.classList.add('visible');
+});
+
+modalClose.addEventListener('click', () => {
+  qrModal.classList.remove('visible');
+});
+
+qrModal.addEventListener('click', (e) => {
+  if (e.target === qrModal) {
+    qrModal.classList.remove('visible');
+  }
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    qrModal.classList.remove('visible');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  }
+});
+</script>
+</body>
+</html>
